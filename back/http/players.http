@@ -1,0 +1,21 @@
+GET http://localhost:8000/players
+
+###
+
+POST http://localhost:8000/players
+Content-Type: application/json
+
+{
+    "email": "email2@test.com",
+    "pseudo": "Toto",
+    "avatar": ""
+}
+
+### login
+
+POST http://localhost:8000/players
+Content-Type: application/json
+
+{
+    "email": "email2@test.com"
+}

@@ -1,0 +1,11 @@
+POST http://localhost:8000/games
+Content-Type: application/json
+
+{
+    "name": "Scopa-500",
+    "buyIn": 500
+}
+
+###
+
+GET http://localhost:8000/games
