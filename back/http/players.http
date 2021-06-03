@@ -6,16 +6,29 @@ POST http://localhost:8000/players
 Content-Type: application/json
 
 {
-    "email": "email2@test.com",
+    "email": "email@test.com",
+    "password": "12345",
     "pseudo": "Toto",
     "avatar": ""
 }
 
 ### login
 
-POST http://localhost:8000/players
+POST http://localhost:8000/players/login
 Content-Type: application/json
 
 {
-    "email": "email2@test.com"
+    "email": "email@test.com",
+    "password": "12345"
+}
+
+###
+
+
+PUT http://localhost:8000/players/e3f31f1b-c476-49e7-866d-38007edef530/wallet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZW1haWxAdGVzdC5jb20iLCJpYXQiOjE2MjI3MjU1MjksImV4cCI6MTYyMjcyOTEyOX0.tGI3saZtSlbq7Gw6Gz522imDKB-yFQHjzgaVoEm1HTg
+
+{
+    "newBalance": 10
 }

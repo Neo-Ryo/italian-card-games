@@ -5,13 +5,22 @@ const regexIntCheck = require('../middleware/regexIntCheck');
 const jwt = require('jsonwebtoken');
 const { uuidV4Check, urlImgRegExp } = require('../middleware/regexIntCheck');
 const jwtCheck = require('../middleware/jwtCheck');
+const bcrypt = require('bcrypt');
 //env
 const { SECRET } = process.env;
 
 //get all players
 Player.get('/', async (req, res) => {
   try {
-    const allPlayers = await prisma.player.findMany();
+    const allPlayers = await prisma.player.findMany({
+      select: {
+        id: true,
+        email: true,
+        pseudo: true,
+        avatar: true,
+        wallet: true,
+      },
+    });
     res.status(200).json(allPlayers);
   } catch (error) {
     res.status(400).json(error);
@@ -22,15 +31,20 @@ Player.get('/', async (req, res) => {
 Player.post('/', async (req, res, next) => {
   const { email, pseudo, avatar } = req.body;
   try {
+    const saltRound = 10;
+    const crypted = await bcrypt.hash(pseudo, saltRound);
     const createAPlayer = await prisma.player.create({
       data: {
         email,
+        password: crypted,
         pseudo,
         avatar,
       },
     });
-    if (createAPlayer) jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
-    res.status(201).json(createAPlayer);
+    if (createAPlayer) {
+      const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
+      res.status(201).json({ ...createAPlayer, token });
+    }
   } catch (error) {
     res.status(400);
     next(error);
@@ -39,17 +53,32 @@ Player.post('/', async (req, res, next) => {
 
 //login
 Player.post('/login', async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
   try {
-    const login = await prisma.player.findUnique({
-      where: {
-        email,
-      },
+    const hashed = await prisma.player.findUnique({
+      where: { email },
     });
-    const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
-    res.status(200).json({ ...login, token });
+    bcrypt.compare(password, hashed.password, async function (err, result) {
+      try {
+        const login = await prisma.player.findUnique({
+          where: {
+            email,
+          },
+          select: {
+            id: true,
+            email: true,
+            avatar: true,
+            wallet: true,
+          },
+        });
+        const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
+        res.status(200).json({ ...login, token });
+      } catch (error) {
+        res.status(401).json({ message: 'password incorrect' });
+      }
+    });
   } catch (error) {
-    res.status(404).json(error);
+    res.status(404).json({ message: error });
   }
 });
 
@@ -74,5 +103,8 @@ Player.put(
     }
   }
 );
+
+//to remove or modify
+Player.delete('');
 
 module.exports = Player;
