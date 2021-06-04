@@ -3,6 +3,7 @@ import Axios from 'axios';
 
 export default createStore({
   state: {
+    isNavBar: true,
     player: {
       pseudo: '',
       email: '',
@@ -11,6 +12,9 @@ export default createStore({
     },
   },
   mutations: {
+    showNavbar() {
+      this.state.isNavBar = !this.state.isNavBar;
+    },
     getPlayerData() {
       this.state.player = {
         pseudo: 'Marco',
@@ -18,6 +22,13 @@ export default createStore({
       };
     },
   },
-  actions: {},
+  actions: {
+    getPlayerData({ commit }) {
+      commit('getPlayerData');
+    },
+    showNavbar({ commit }) {
+      commit('showNavbar');
+    },
+  },
   modules: {},
 });

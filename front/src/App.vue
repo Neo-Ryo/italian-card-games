@@ -1,10 +1,19 @@
 <template>
-	<div id="nav">
+	<div id="nav" v-if="this.$store.state.isNavBar">
 		<router-link to="/"> Home </router-link>
 		<router-link to="/about">About</router-link>
 	</div>
 	<router-view />
 </template>
+
+<script>
+import store from "./store";
+
+export default {
+	store,
+};
+</script>
+
 
 <style>
 :root {
@@ -33,6 +42,9 @@ h3 {
 	font-family: "Roboto", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	text-align: center;
 	color: var(--main);
 }

@@ -1,10 +1,8 @@
 <template>
 	<div class="home">
-		<button @click="updateState">state updater</button>
+		<button @click="showNavbar">show navbar</button>
+		<LoginForm />
 		<button @click="showVueInfos">Hello World</button>
-		<h1>{{ this.$store.state.player.pseudo }}</h1>
-		<h2>{{ this.$store.state.player.email }}</h2>
-		<p>{{ this.$store.state.player }}</p>
 		<HelloWorld v-if="showVJSInfos" msg="Welcome to Your Vue.js App" />
 	</div>
 </template>
@@ -12,6 +10,7 @@
 <script>
 // @ is an alias to /src
 import store from "../store";
+import LoginForm from "../components/LoginForm.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
@@ -19,6 +18,7 @@ export default {
 	store,
 	components: {
 		HelloWorld,
+		LoginForm,
 	},
 	data() {
 		return {
@@ -30,8 +30,11 @@ export default {
 			this.showVJSInfos = !this.showVJSInfos;
 		},
 		updateState: function () {
-			this.$store.commit("getPlayerData");
-			console.log(store.state.player);
+			this.$store.dispatch("getPlayerData");
+		},
+		showNavbar: function () {
+			this.$store.dispatch("showNavbar");
+			console.log(store.state.isNavBar);
 		},
 	},
 };
