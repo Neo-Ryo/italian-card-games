@@ -15,10 +15,9 @@ export default createStore({
     showNavbar() {
       this.state.isNavBar = !this.state.isNavBar;
     },
-    getPlayerData() {
-      this.state.player = {
-        pseudo: 'Marco',
-        email: 'test@email',
+    getPlayerData(state, payload) {
+      state.player = {
+        ...payload,
       };
     },
   },
