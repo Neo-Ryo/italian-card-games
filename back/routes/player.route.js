@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const { uuidV4Check, urlImgRegExp } = require('../middleware/regexIntCheck');
 const jwtCheck = require('../middleware/jwtCheck');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 //env
 const { SECRET } = process.env;
 
@@ -28,8 +30,8 @@ Player.get('/', async (req, res) => {
 });
 
 //create a new player
-Player.post('/', async (req, res, next) => {
-  const { email, pseudo, password, avatar } = req.body;
+Player.post('/', upload.single('avatar'), async (req, res, next) => {
+  const { email, pseudo, password } = req.body;
   try {
     const saltRound = 10;
     const crypted = await bcrypt.hash(password, saltRound);
