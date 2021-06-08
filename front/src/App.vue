@@ -1,9 +1,11 @@
 <template>
-	<div id="nav" v-if="this.$store.state.isNavBar">
-		<router-link to="/"> Home </router-link>
-		<router-link to="/about">About</router-link>
+	<div id="app">
+		<div id="nav" v-if="this.$store.state.isNavBar">
+			<router-link to="/"> Home </router-link>
+			<router-link to="/about">About</router-link>
+		</div>
+		<router-view />
 	</div>
-	<router-view />
 </template>
 
 <script>
@@ -27,6 +29,7 @@ export default {
 body {
 	margin: 0;
 	box-sizing: border-box;
+	min-height: 100vh;
 	background-color: var(--dark);
 }
 
@@ -43,6 +46,7 @@ h3 {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	display: flex;
+	min-height: 100vh;
 	flex-direction: column;
 	justify-content: center;
 	text-align: center;

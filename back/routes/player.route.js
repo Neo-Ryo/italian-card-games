@@ -29,10 +29,10 @@ Player.get('/', async (req, res) => {
 
 //create a new player
 Player.post('/', async (req, res, next) => {
-  const { email, pseudo, avatar } = req.body;
+  const { email, pseudo, password, avatar } = req.body;
   try {
     const saltRound = 10;
-    const crypted = await bcrypt.hash(pseudo, saltRound);
+    const crypted = await bcrypt.hash(password, saltRound);
     const createAPlayer = await prisma.player.create({
       data: {
         email,
@@ -58,27 +58,28 @@ Player.post('/login', async (req, res) => {
     const hashed = await prisma.player.findUnique({
       where: { email },
     });
-    bcrypt.compare(password, hashed.password, async function (err, result) {
-      try {
-        const login = await prisma.player.findUnique({
-          where: {
-            email,
-          },
-          select: {
-            id: true,
-            email: true,
-            avatar: true,
-            wallet: true,
-          },
-        });
-        const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
-        res.status(200).json({ ...login, token });
-      } catch (error) {
-        res.status(401).json({ message: 'password incorrect' });
-      }
-    });
+    console.log(hashed.password);
+    const match = await bcrypt.compare(password, hashed.password);
+    console.log(match);
+    if (match) {
+      const login = await prisma.player.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          id: true,
+          email: true,
+          avatar: true,
+          wallet: true,
+        },
+      });
+      const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
+      res.status(200).json({ ...login, token });
+    } else {
+      throw new Error();
+    }
   } catch (error) {
-    res.status(404).json({ message: error });
+    res.status(404).json({ message: 'indentifiant incorrect' });
   }
 });
 

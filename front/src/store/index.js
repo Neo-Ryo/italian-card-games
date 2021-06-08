@@ -3,7 +3,7 @@ import Axios from 'axios';
 
 export default createStore({
   state: {
-    isNavBar: true,
+    isNavBar: false,
     player: {
       pseudo: '',
       email: '',

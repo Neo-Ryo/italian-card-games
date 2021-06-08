@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="submitForm" class="form-wrapper">
-		<h1 class="title">LOGIN</h1>
+		<h1 class="title">SIGNIN</h1>
 		<div class="input-wrapper">
 			<label for="email">enter your email</label>
 			<input
@@ -21,21 +21,16 @@
 				placeholder="your password..."
 			/>
 		</div>
-		<!-- loading button -->
-		<Loader v-if="isLoading" />
-		<button type="submit" class="button-submit" v-else>envoyer</button>
-		<!-- error message -->
+		<button type="submit" class="button-submit">envoyer</button>
 		<p v-if="isError" class="error-message">erreur d'indentifiants</p>
 	</form>
 </template>
 
 <script>
 import Axios from "axios";
-import Loader from "@/components/Loader.vue";
 
 export default {
-	name: "LoginForm",
-	components: { Loader },
+	name: "SigninForm",
 	data() {
 		return {
 			isLoading: false,
@@ -43,14 +38,12 @@ export default {
 			error: "",
 			email: "",
 			password: "",
-			login: true,
 		};
 	},
 	methods: {
 		submitForm: async function () {
 			try {
 				this.isLoading = true;
-				console.log("LOADING");
 				const res = await Axios.post("http://localhost:8000/players/login", {
 					email: this.email,
 					password: this.password,
@@ -61,11 +54,9 @@ export default {
 				const playerObj = { id, email, avatar, wallet };
 				this.$store.commit("getPlayerData", playerObj);
 				this.isLoading = false;
-				this.$router.push("dashboard");
 			} catch (error) {
 				console.log("MY ERROR", error);
 				this.isError = true;
-				this.isLoading = false;
 				this.error = error.response;
 			}
 		},
