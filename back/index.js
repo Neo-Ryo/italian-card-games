@@ -11,7 +11,11 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use('/uploads', express.static('uploads'));
+//routes
+app.get('/', (req, res) => {
+  res.status(200).json('Welcome on Italian cards game API');
+});
 app.use('/players', Player);
 app.use('/games', Game);
 async function main() {
