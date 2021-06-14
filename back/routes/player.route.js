@@ -20,13 +20,12 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype === mType) {
     cb(null, true);
   } else {
-    cb(null, false);
-    throw new Error({ message: 'mimetype not accepted' });
+    cb(new Error('mimetype not accepted'));
   }
 };
 const upload = multer({
   storage,
-  limits: { fileSize: 1024 * 1024 * 3 },
+  limits: { fileSize: 1024 * 1024 },
   fileFilter,
 });
 //env
@@ -47,16 +46,6 @@ Player.get('/', async (req, res) => {
     res.status(200).json(allPlayers);
   } catch (error) {
     res.status(400).json(error);
-  }
-});
-
-//post an image
-Player.post('/avatar', upload.single('avatar'), async (req, res) => {
-  try {
-    console.log(req.file.path);
-    res.status(200).json({ url: req.file });
-  } catch (error) {
-    res.status(400).json({ message: 'file upload failed' });
   }
 });
 
@@ -89,7 +78,7 @@ Player.post('/', upload.single('avatar'), async (req, res, next) => {
       res.status(201).json({ ...createAPlayer, token });
     }
   } catch (error) {
-    res.status(400);
+    res.status(400).json(error.message);
     next(error);
   }
 });
