@@ -2,10 +2,10 @@
 	<LoginForm v-if="account" />
 	<SigninForm v-else />
 	<button @click="account = !account" class="button-account" v-if="account">
-		Deja un compte? Cliquez ici.
+		Pas de compte? Cliquez ici.
 	</button>
 	<button @click="account = !account" class="button-account" v-else>
-		Pas de compte? Cliquez ici.
+		Deja un compte? Cliquez ici.
 	</button>
 </template>
 

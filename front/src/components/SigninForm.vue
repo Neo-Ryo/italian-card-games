@@ -35,20 +35,32 @@
 				placeholder="Superman64..."
 			/>
 		</div>
-		<div class="input-wrapper">
+		<div class="input-wrapper-avatar">
 			<label for="avatar">Choisissez votre image</label>
-			<input class="input" type="file" @change="selectedImage" name="avatar" />
+			<input
+				class="input"
+				ref="file"
+				type="file"
+				@change="selectedImage"
+				name="avatar"
+			/>
+			<img class="avatar" :src="readableAvatar" alt="players avatar" />
 		</div>
-		<button type="submit" class="button-submit">envoyer</button>
+		<!-- loading button -->
+		<Loader v-if="isLoading" />
+		<button type="submit" class="button-submit" v-else>envoyer</button>
+		<!-- error message -->
 		<p v-if="isError" class="error-message">erreur d'indentifiants</p>
 	</form>
 </template>
 
 <script>
 import Axios from "axios";
+import Loader from "@/components/Loader.vue";
 
 export default {
 	name: "SigninForm",
+	Loader,
 	data() {
 		return {
 			isLoading: false,
@@ -57,18 +69,25 @@ export default {
 			email: "",
 			password: "",
 			pseudo: "",
-			avatar: "",
+			avatar: null,
+			readableAvatar: "",
 		};
 	},
 	methods: {
 		submitForm: async function () {
 			try {
 				this.isLoading = true;
+				let fd = new FormData();
+				fd.append("avatar", this.avatar);
+				const uploadedFile = await Axios.post(
+					"http://localhost:8000/players/upload",
+					fd
+				);
 				const res = await Axios.post("http://localhost:8000/players", {
 					email: this.email,
 					password: this.password,
 					pseudo: this.pseudo,
-					avatar: this.avatar,
+					avatar: uploadedFile.data.filePath,
 				});
 				sessionStorage.setItem("token", res.data.token);
 				console.log(res.data);
@@ -80,10 +99,13 @@ export default {
 				console.log("MY ERROR", error);
 				this.isError = true;
 				this.error = error.response;
+			} finally {
+				this.isLoading = false;
 			}
 		},
 		selectedImage: function (event) {
-			this.avatar = event.target.files[0];
+			this.avatar = this.$refs.file.files[0];
+			this.readableAvatar = URL.createObjectURL(this.$refs.file.files[0]);
 		},
 	},
 };
@@ -118,6 +140,19 @@ export default {
 	margin: 20px auto;
 	width: 80%;
 }
+
+.input-wrapper-avatar {
+	display: flex;
+	margin: 20px auto;
+	width: 80%;
+}
+
+.avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+}
+
 label {
 	margin: 10px;
 }

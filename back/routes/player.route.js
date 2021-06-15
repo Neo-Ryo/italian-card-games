@@ -49,21 +49,22 @@ Player.get('/', async (req, res) => {
   }
 });
 
-//get image url test
-Player.get('/avatar', async (req, res) => {
+Player.post('/upload', upload.single('avatar'), async (req, res) => {
   try {
-    req.res.status(200).json();
+    const avatar = req.file.path;
+    console.log(avatar);
+    res.status(200).json({ filePath: avatar });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json(error.message);
+    next(error);
   }
 });
 
 //create a new player
-Player.post('/', upload.single('avatar'), async (req, res, next) => {
-  const { email, pseudo, password } = req.body;
+Player.post('/', async (req, res, next) => {
   try {
+    const { email, pseudo, password, avatar } = req.body;
     const saltRound = 10;
-    const avatar = req.file.path ? req.file.path : null;
     const crypted = await bcrypt.hash(password, saltRound);
     const createAPlayer = await prisma.player.create({
       data: {
@@ -77,6 +78,7 @@ Player.post('/', upload.single('avatar'), async (req, res, next) => {
       const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
       res.status(201).json({ ...createAPlayer, token });
     }
+    // res.status(201).json('avatar');
   } catch (error) {
     res.status(400).json(error.message);
     next(error);
