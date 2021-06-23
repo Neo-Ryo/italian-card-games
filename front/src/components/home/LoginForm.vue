@@ -31,7 +31,7 @@
 
 <script>
 import Axios from "axios";
-import Loader from "@/components/Loader.vue";
+import Loader from "@/components/anims/Loader.vue";
 
 export default {
 	name: "LoginForm",
@@ -61,7 +61,8 @@ export default {
 				const playerObj = { id, email, avatar, wallet };
 				this.$store.commit("getPlayerData", playerObj);
 				this.isLoading = false;
-				this.$router.push("dashboard");
+				const dashboardRoute = `/dashboard/${id}`;
+				this.$router.push(dashboardRoute);
 			} catch (error) {
 				console.log("MY ERROR", error);
 				this.isError = true;

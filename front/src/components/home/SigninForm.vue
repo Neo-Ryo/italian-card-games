@@ -56,7 +56,7 @@
 
 <script>
 import Axios from "axios";
-import Loader from "@/components/Loader.vue";
+import Loader from "@/components/anims/Loader.vue";
 
 export default {
 	name: "SigninForm",

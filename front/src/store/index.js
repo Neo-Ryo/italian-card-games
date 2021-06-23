@@ -11,6 +11,11 @@ export default createStore({
       wallet: '',
     },
   },
+  // getters: {
+  //   playerData: (state) => {
+  //     return state.player;
+  //   },
+  // },
   mutations: {
     showNavbar() {
       this.state.isNavBar = !this.state.isNavBar;
