@@ -92,9 +92,7 @@ Player.post('/login', async (req, res) => {
     const hashed = await prisma.player.findUnique({
       where: { email },
     });
-    console.log(hashed.password);
     const match = await bcrypt.compare(password, hashed.password);
-    console.log(match);
     if (match) {
       const login = await prisma.player.findUnique({
         where: {
