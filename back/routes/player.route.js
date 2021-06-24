@@ -7,6 +7,7 @@ const { uuidV4Check, urlImgRegExp } = require('../middleware/regexIntCheck');
 const jwtCheck = require('../middleware/jwtCheck');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+//multer options
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads');
@@ -23,6 +24,7 @@ const fileFilter = (req, file, cb) => {
     cb(new Error('mimetype not accepted'));
   }
 };
+// upload middleware with multer options
 const upload = multer({
   storage,
   limits: { fileSize: 1024 * 1024 },
@@ -76,7 +78,10 @@ Player.post('/', async (req, res, next) => {
     });
     if (createAPlayer) {
       const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
-      res.status(201).json({ ...createAPlayer, token });
+      res.status(201).json({
+        ...createAPlayer,
+        token,
+      });
     }
     // res.status(201).json('avatar');
   } catch (error) {
@@ -101,12 +106,18 @@ Player.post('/login', async (req, res) => {
         select: {
           id: true,
           email: true,
+          pseudo: true,
           avatar: true,
           wallet: true,
         },
       });
       const token = jwt.sign({ data: email }, SECRET, { expiresIn: '1h' });
-      res.status(200).json({ ...login, token });
+      //req.header.host to watch once deployed...
+      res.status(200).json({
+        ...login,
+        avatar: 'http://' + req.headers.host + '/' + login.avatar,
+        token,
+      });
     } else {
       throw new Error();
     }

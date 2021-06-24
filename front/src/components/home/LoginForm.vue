@@ -57,8 +57,8 @@ export default {
 				});
 				sessionStorage.setItem("token", res.data.token);
 				console.log(res.data);
-				const { id, email, avatar, wallet } = res.data;
-				const playerObj = { id, email, avatar, wallet };
+				const { id, email, pseudo, avatar, wallet } = res.data;
+				const playerObj = { id, email, pseudo, avatar, wallet };
 				this.$store.commit("getPlayerData", playerObj);
 				this.isLoading = false;
 				const dashboardRoute = `/dashboard/${id}`;

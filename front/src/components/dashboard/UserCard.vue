@@ -21,4 +21,7 @@ export default {
 	height: 150px;
 	width: 150px;
 }
+.avatar {
+	width: 50%;
+}
 </style>
