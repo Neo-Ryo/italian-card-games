@@ -30,6 +30,11 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 },
   fileFilter,
 });
+//http or https?
+const httpKey = (env) => {
+  if (env === 'development') return 'http://';
+  return 'https://';
+};
 //env
 const { SECRET } = process.env;
 
@@ -115,7 +120,8 @@ Player.post('/login', async (req, res) => {
       //req.header.host to watch once deployed...
       res.status(200).json({
         ...login,
-        avatar: 'http://' + req.headers.host + '/' + login.avatar,
+        avatar:
+          httpKey(process.env.NODE_ENV) + req.headers.host + '/' + login.avatar,
         token,
       });
     } else {
